@@ -24,7 +24,7 @@ class TransformerDDPM(nn.Module):
 
         self.num_mlp_layers = 2
         self.mlp_dims = 2048
-        self.device = "cuda"
+        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
         self.token_embedding = nn.Linear(self.vocab_size, self.embed_size)
         self.position_embedding = nn.Embedding(self.seq_len, self.embed_size)
@@ -132,6 +132,8 @@ class DenseFiLM(nn.Module):
 
         self.silu = nn.SiLU()
 
+        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
     def forward(self, t):
 
         t_embedding = self.positional_timestep_embedding(t, self.embed_channels)
@@ -154,7 +156,7 @@ class DenseFiLM(nn.Module):
         assert len(noise.shape) == 1
         half_dim = channels // 2
         emb = math.log(10000) / float(half_dim - 1)
-        emb = torch.exp(torch.arange(half_dim, device="cuda") * -emb)
+        emb = torch.exp(torch.arange(half_dim, device=self.device) * -emb)
         emb = 5000 * noise[:, None] * emb[None, :]
         emb = torch.cat([torch.sin(emb), torch.cos(emb)], dim=1)
         if channels % 2 == 1:
