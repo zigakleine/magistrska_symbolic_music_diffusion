@@ -17,7 +17,7 @@
 import os
 import pickle
 
-import jax
+# import jax
 import numpy as np
 import tensorflow as tf
 
@@ -245,34 +245,34 @@ def roll_upper_triangular(vector, size):
   return matrix
 
 
-def erase_bars(embeddings, indices):
-  """Erases vectors from a given a set of embeddings.
-
-  Args:
-    embeddings: A numpy matrix of embeddings.
-    indices: A list of indices corresponding to vectors that will be erased.
-
-  Returns:
-    A modified embedding matrix.
-  """
-  return jax.ops.index_update(embeddings, jax.ops.index[indices], 0)
-
-
-def infill_bars(embeddings, chunk_params, erased_chunk_indices):
-  """Infills a partially erased embedding matrix with sampled embedding parameters.
-
-  Args:
-    embeddings: A partially incomplete embedding matrix.
-    chunk_params: A list of sampled embedding vectors.
-    erased_bar_indices: A list of indices corresponding to vector positions in the
-        embedding matrix that will be replaced by sampled embeddings.
-
-  Returns:
-    A modified embedding matrix.
-  """
-  assert len(chunk_params) == len(erased_chunk_indices)
-  return jax.ops.index_update(embeddings, jax.ops.index[erased_chunk_indices],
-                              chunk_params)
+# def erase_bars(embeddings, indices):
+#   """Erases vectors from a given a set of embeddings.
+#
+#   Args:
+#     embeddings: A numpy matrix of embeddings.
+#     indices: A list of indices corresponding to vectors that will be erased.
+#
+#   Returns:
+#     A modified embedding matrix.
+#   """
+#   return jax.ops.index_update(embeddings, jax.ops.index[indices], 0)
+#
+#
+# def infill_bars(embeddings, chunk_params, erased_chunk_indices):
+#   """Infills a partially erased embedding matrix with sampled embedding parameters.
+#
+#   Args:
+#     embeddings: A partially incomplete embedding matrix.
+#     chunk_params: A list of sampled embedding vectors.
+#     erased_bar_indices: A list of indices corresponding to vector positions in the
+#         embedding matrix that will be replaced by sampled embeddings.
+#
+#   Returns:
+#     A modified embedding matrix.
+#   """
+#   assert len(chunk_params) == len(erased_chunk_indices)
+#   return jax.ops.index_update(embeddings, jax.ops.index[erased_chunk_indices],
+#                               chunk_params)
 
 
 def batches(data, labels=None, batch_size=32):

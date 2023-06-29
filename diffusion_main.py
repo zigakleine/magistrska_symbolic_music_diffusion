@@ -90,6 +90,8 @@ def setup_logging(run_name):
 
 def train():
 
+    print("starting")
+
     tf.config.experimental.set_visible_devices([], 'GPU')
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     run_name = "DDPM_Uncondtional"
@@ -100,8 +102,10 @@ def train():
     mse = nn.MSELoss()
     diffusion = Diffusion(device=device)
     # logger = SummaryWriter(os.path.join("runs",  run_name))
+    print("device is" , diffusion.device)
 
     dataset = "/content/drive/MyDrive/notesequences"
+    # dataset = "./training_data"
     data_shape = (32, 512)
     problem = 'vae'
     batch_size = 64
