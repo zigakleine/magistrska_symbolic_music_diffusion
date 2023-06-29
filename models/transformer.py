@@ -6,7 +6,7 @@ import torch.nn.functional as F
 
 class TransformerDDPM(nn.Module):
 
-    def __init__(self):
+    def __init__(self, device):
         super().__init__()
 
         self.batch_size = 16
@@ -21,7 +21,7 @@ class TransformerDDPM(nn.Module):
 
         self.num_mlp_layers = 2
         self.mlp_dims = 2048
-        self.device = "cpu"
+        self.device = device
 
         self.token_embedding = nn.Linear(self.vocab_size, self.embed_size)
         self.position_embedding = nn.Embedding(self.seq_len, self.embed_size)

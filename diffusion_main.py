@@ -112,7 +112,7 @@ def train():
     slice_ckpt='./checkpoints/slice-mel-512.pkl'
     include_cardinality = False
 
-    epochs = 100000
+    epochs = 150
 
     train_ds, test_ds = input_pipeline.get_dataset(dataset, data_shape, batch_size, normalize, slice_ckpt, include_cardinality)
 
@@ -150,32 +150,32 @@ def train():
         val_count = 0
         val_loss_sum = 0
 
-        model.eval()
-        for step, batch in enumerate(tfds.as_numpy(test_ds)):
-            batch = torch.from_numpy(batch).to(device)
-            t = diffusion.sample_timesteps(batch.shape[0]).to(device)
+        with torch.no_grad():
+            for step, batch in enumerate(tfds.as_numpy(test_ds)):
+                batch = torch.from_numpy(batch).to(device)
+                t = diffusion.sample_timesteps(batch.shape[0]).to(device)
 
-            x_t, noise = diffusion.noise_latents(batch, t)
-            predicted_noise = model(x_t, t)
-            val_loss = mse(noise, predicted_noise)
-            val_loss_sum += val_loss
+                x_t, noise = diffusion.noise_latents(batch, t)
+                predicted_noise = model(x_t, t)
+                val_loss = mse(noise, predicted_noise)
+                val_loss_sum += val_loss
 
-            val_count += 1
+                val_count += 1
 
-        mean_val_loss = val_loss_sum / val_count
-        val_losses.append(mean_val_loss)
-        logging.info(f"Epoch {epoch} mean validation loss: {mean_val_loss}")
-        model.train()
-        sampled_latents = diffusion.sample(model, batch_size)
-        batch_transformed = input_pipeline.inverse_data_transform(sampled_latents, slice_ckpt=slice_ckpt,
+            mean_val_loss = val_loss_sum / val_count
+            val_losses.append(mean_val_loss)
+            logging.info(f"Epoch {epoch} mean validation loss: {mean_val_loss}")
+
+        sampled_latents = diffusion.sample(model, 1)
+        batch_transformed = input_pipeline.inverse_data_transform(torch.Tensor.cpu(sampled_latents), slice_ckpt=slice_ckpt,
                                                                   data_min=train_ds.min, data_max=train_ds.max)
 
-        torch.save(batch_transformed, os.path.join("results", run_name, f"{epoch}_epoch_batch.pt"))
-        if epoch % 1000 == 0:
-            torch.save(model.state_dict(), os.path.join("models", run_name, f"{epoch}_model_ckpt.pt"))
+        torch.save(batch_transformed, os.path.join(dataset, "results", run_name, f"{epoch}_epoch_batch.pt"))
+        if epoch % 10 == 0:
+            torch.save(model.state_dict(), os.path.join(dataset, "models", run_name, f"{epoch}_model_ckpt.pt"))
 
-    torch.save(train_losses, os.path.join("results", run_name, f"train_losses.pt"))
-    torch.save(val_losses, os.path.join("results", run_name, f"val_losses.pt"))
+    torch.save(train_losses, os.path.join(dataset, "results", run_name, f"train_losses.pt"))
+    torch.save(val_losses, os.path.join(dataset,  "results", run_name, f"val_losses.pt"))
 
 if __name__ == "__main__":
     train()
