@@ -103,8 +103,8 @@ def train():
     # logger = SummaryWriter(os.path.join("runs",  run_name))
     print("device is" , diffusion.device)
 
-    # dataset = "/content/drive/MyDrive/notesequences"
-    dataset = "./training_data"
+    dataset = "/content/drive/MyDrive/notesequences"
+    # dataset = "./training_data"
     data_shape = (32, 512)
     problem = 'vae'
     batch_size = 64
@@ -125,11 +125,11 @@ def train():
     for epoch in range(epochs):
 
         logging.info(f"Starting epoch {epoch}:")
-        pbar = tqdm(train_tensors)
+        # pbar = tqdm(train_tensors)
         train_count = 0
         train_loss_sum = 0
 
-        for step, batch in enumerate(pbar):
+        for step, batch in enumerate(train_tensors):
             # print(step, batch[0])
 
             batch = batch.to(device)
@@ -139,7 +139,7 @@ def train():
             predicted_noise = model(x_t, t)
 
             loss = mse(noise, predicted_noise)
-            train_loss_sum += loss
+            train_loss_sum += loss.item()
 
             optimizer.zero_grad()
             loss.backward()
@@ -161,7 +161,7 @@ def train():
                 x_t, noise = diffusion.noise_latents(batch, t)
                 predicted_noise = model(x_t, t)
                 val_loss = mse(noise, predicted_noise)
-                val_loss_sum += val_loss
+                val_loss_sum += val_loss.item()
 
                 val_count += 1
 
