@@ -1,15 +1,14 @@
 
-import tensorflow as tf
+#import tensorflow as tf
 import tensorflow_datasets as tfds
 import input_pipeline
 
 import os
 import torch
 import torch.nn as nn
-from matplotlib import pyplot as plt
 from torch import optim
 from tqdm import tqdm
-import numpy as np
+
 import logging
 from models.transformer_film import TransformerDDPM
 
@@ -92,7 +91,7 @@ def train():
 
     print("starting")
 
-    tf.config.experimental.set_visible_devices([], 'GPU')
+    #tf.config.experimental.set_visible_devices([], 'GPU')
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     run_name = "DDPM_Uncondtional"
     setup_logging(run_name)
