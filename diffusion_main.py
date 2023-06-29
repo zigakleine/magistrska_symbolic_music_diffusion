@@ -168,7 +168,8 @@ def train():
                                                                   data_min=train_ds.min, data_max=train_ds.max)
 
         torch.save(batch_transformed, os.path.join("results", run_name, f"{epoch}_epoch_batch.pt"))
-        torch.save(model.state_dict(), os.path.join("models", run_name, f"ckpt.pt"))
+        if epoch % 1000 == 0:
+            torch.save(model.state_dict(), os.path.join("models", run_name, f"{epoch}_model_ckpt.pt"))
 
     torch.save(train_losses, os.path.join("results", run_name, f"train_losses.pt"))
     torch.save(val_losses, os.path.join("results", run_name, f"val_losses.pt"))
