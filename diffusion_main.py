@@ -103,8 +103,8 @@ def train():
     # logger = SummaryWriter(os.path.join("runs",  run_name))
     print("device is" , diffusion.device)
 
-    dataset = "/content/drive/MyDrive/notesequences"
-    # dataset = "./training_data"
+    # dataset = "/content/drive/MyDrive/notesequences"
+    dataset = "./training_data"
     data_shape = (32, 512)
     problem = 'vae'
     batch_size = 64
@@ -118,21 +118,21 @@ def train():
 
     val_losses = []
     train_losses = []
-    train_tensors = [torch.from_numpy(batch) for batch in tfds.as_numpy(train_ds)]
-    test_tensors = [torch.from_numpy(batch) for batch in tfds.as_numpy(test_ds)]
+    train_numpy = tfds.as_numpy(train_ds)
+    test_numpy = tfds.as_numpy(test_ds)
 
 
     for epoch in range(epochs):
 
         logging.info(f"Starting epoch {epoch}:")
-        # pbar = tqdm(train_tensors)
+        pbar = tqdm(train_numpy)
         train_count = 0
         train_loss_sum = 0
 
-        for step, batch in enumerate(train_tensors):
+        for step, batch in enumerate(pbar):
             # print(step, batch[0])
 
-            batch = batch.to(device)
+            batch = torch.from_numpy(batch).to(device)
             t = diffusion.sample_timesteps(batch.shape[0]).to(device)
 
             x_t, noise = diffusion.noise_latents(batch, t)
@@ -154,8 +154,8 @@ def train():
         val_loss_sum = 0
 
         with torch.no_grad():
-            for step, batch in enumerate(test_tensors):
-                batch = batch.to(device)
+            for step, batch in enumerate(test_numpy):
+                batch = torch.from_numpy(batch).to(device)
                 t = diffusion.sample_timesteps(batch.shape[0]).to(device)
 
                 x_t, noise = diffusion.noise_latents(batch, t)
