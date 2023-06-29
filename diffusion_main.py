@@ -103,8 +103,8 @@ def train():
     # logger = SummaryWriter(os.path.join("runs",  run_name))
     print("device is" , diffusion.device)
 
-    # dataset = "/content/drive/MyDrive/notesequences"
-    dataset = "./training_data"
+    dataset = "/content/drive/MyDrive/notesequences"
+    # dataset = "./training_data"
     data_shape = (32, 512)
     problem = 'vae'
     batch_size = 64
