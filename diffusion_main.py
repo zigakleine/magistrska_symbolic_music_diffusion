@@ -93,7 +93,7 @@ def train():
 
     #tf.config.experimental.set_visible_devices([], 'GPU')
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    run_name = "DDPM_Uncondtional"
+    run_name = "DDPM_unconditional"
     setup_logging(run_name)
     lr = 1e-3
     model = TransformerDDPM().to(device)
