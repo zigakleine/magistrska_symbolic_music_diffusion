@@ -94,7 +94,7 @@ def train():
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     run_name = "DDPM_Uncondtional"
     setup_logging(run_name)
-    lr = 3e-4
+    lr = 1e-3
     model = TransformerDDPM().to(device)
     optimizer = optim.AdamW(model.parameters(), lr=lr)
     mse = nn.MSELoss()
@@ -104,12 +104,12 @@ def train():
     dataset = "/content/drive/MyDrive/notesequences"
     data_shape = (32, 512)
     problem = 'vae'
-    batch_size = 4
+    batch_size = 64
     normalize = True
     slice_ckpt='./checkpoints/slice-mel-512.pkl'
     include_cardinality = False
 
-    epochs = 5
+    epochs = 100000
 
     train_ds, test_ds = input_pipeline.get_dataset(dataset, data_shape, batch_size, normalize, slice_ckpt, include_cardinality)
 
