@@ -96,7 +96,7 @@ def train():
     run_name = "DDPM_Uncondtional"
     setup_logging(run_name)
     lr = 1e-3
-    model = TransformerDDPM().to(device)
+    model = TransformerDDPM(device).to(device)
     optimizer = optim.AdamW(model.parameters(), lr=lr)
     mse = nn.MSELoss()
     diffusion = Diffusion(device=device)
