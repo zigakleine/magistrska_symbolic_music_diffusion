@@ -118,11 +118,14 @@ def train():
 
     val_losses = []
     train_losses = []
+    train_numpy = tfds.as_numpy(train_ds)
+    test_numpy = tfds.as_numpy(test_ds)
+
 
     for epoch in range(epochs):
 
         logging.info(f"Starting epoch {epoch}:")
-        pbar = tqdm(tfds.as_numpy(train_ds))
+        pbar = tqdm(train_numpy)
         train_count = 0
         train_loss_sum = 0
 
@@ -151,7 +154,7 @@ def train():
         val_loss_sum = 0
 
         with torch.no_grad():
-            for step, batch in enumerate(tfds.as_numpy(test_ds)):
+            for step, batch in enumerate(test_numpy):
                 batch = torch.from_numpy(batch).to(device)
                 t = diffusion.sample_timesteps(batch.shape[0]).to(device)
 
